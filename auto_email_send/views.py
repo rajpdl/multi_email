@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import io
 import xlrd
+from django.contrib import messages
 
 def compose(request):
     if(request.method == 'POST'):
@@ -19,9 +20,21 @@ def compose(request):
 
         emailList = []
 
+        #loop through the list of sheet
+
         for i in range(worksheet.nrows):
-            emailList.append(worksheet.cell_value(i, 0))
+            for j in range(worksheet.ncols):
+                if worksheet.cell_value(i, j) == 'Email':
+                    i = 1
+                    while i < worksheet.nrows:
+                        emailList.append(worksheet.cell_value(i, j))
+                        i += 1
+                    
+
+        print(emailList)
         
+        #send the email
+
         send_mail(
         subject,
         body,
@@ -30,16 +43,9 @@ def compose(request):
         fail_silently=False,
         )
 
+        messages.info(request, 'Email is sent...')
 
         return redirect('compose')
-    
-    # recepantList = []
-    # f = open('demofile.txt', 'rt')
-    # for x in f:
-    #     recepantList.append(x)
-    #     # print(x)
-    
-    # print(recepantList)
     
     return render(request, 'compose.html')
 

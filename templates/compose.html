@@ -8,6 +8,9 @@
 </head>
 <body>
     <h1>Send The Email</h1>
+    {% for message in messages %}
+        <p>{{message}}</p>
+    {% endfor %}
     <form action="" method="post" enctype=multipart/form-data>
         {% csrf_token %}
         <label for="xls">Select the list of email spreedsheet file</label><br>
